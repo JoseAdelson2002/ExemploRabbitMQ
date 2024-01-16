@@ -14,6 +14,8 @@ import java.util.HashMap;
 
 import java.util.Map;
 
+import java.time.format.DateTimeFormatter;
+
 public class Receptor {
 
   //private static String user = "";
@@ -22,7 +24,7 @@ public class Receptor {
     Scanner scanner = new Scanner(System.in);
     
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("ec2-54-145-245-115.compute-1.amazonaws.com"); 
+    factory.setHost("ec2-3-90-146-31.compute-1.amazonaws.com"); 
     factory.setUsername("admin");
     factory.setPassword("password");
     factory.setVirtualHost("/");   
@@ -63,15 +65,13 @@ public class Receptor {
         message = scanner.nextLine();
         
         while(message.charAt(0) != '@'){
-         // try{
-            int ano = LocalDate.getYear();
-            int mes = LocalDate.getMonthValue();
-            int dia = LocalDate.getDayOfMonth();
-
-            String data = dia.toString() + "/" +  mes.toString() + "/" +  ano.toString();
+            LocalDate hoje = LocalDate.now();
+            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dataFormatada = hoje.format(formatador); 
+            
             Map<String, Object> headers = new HashMap<>();
             headers.put("sender", user);
-            headers.put("date", data);
+            headers.put("date", dataFormatada);
             headers.put("hour", LocalTime.now().toString().substring(0, 5));
         
             AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
@@ -82,12 +82,8 @@ public class Receptor {
             channel.basicPublish("", routing_key.replace("@", ""), props, message.getBytes("UTF-8"));  
             System.out.print(routing_key + ">> ");
             message = scanner.nextLine();
-        //  }catch(Exception e){
-          //  e.printStackTrace();
-          //}
         }
       }
     }
-
   }
 }
