@@ -18,13 +18,13 @@ import java.time.format.DateTimeFormatter;
 
 public class Receptor {
 
-  //private static String user = "";
+  public static String routing_key = "";
 
   public static void main(String[] argv) throws Exception {
     Scanner scanner = new Scanner(System.in);
     
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("ec2-3-90-146-31.compute-1.amazonaws.com"); 
+    factory.setHost("ec2-3-84-73-215.compute-1.amazonaws.com"); 
     factory.setUsername("admin");
     factory.setPassword("password");
     factory.setVirtualHost("/");   
@@ -48,6 +48,7 @@ public class Receptor {
         String message = new String(body, "UTF-8");
         System.out.println("");
         System.out.println("(" + date + " às " + hour + ") " + sender + " diz: "+ message);
+        System.out.print(routing_key + ">> ");
       }
     };
                       //(queue-name, autoAck, consumer);    
@@ -55,7 +56,7 @@ public class Receptor {
     
 
     System.out.print(">> ");
-    String routing_key = "";
+
     String message = scanner.nextLine();
     while(true){
       if(message.charAt(0) == '@'){
